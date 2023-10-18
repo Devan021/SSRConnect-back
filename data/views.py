@@ -15,10 +15,14 @@ def projects(request):
     return Response(serializer.data)
 
 
-@api_view(['GET'])
-def projectDetails(request, projectId):
-    project = Project.objects.get(projectId=projectId)
-    teamMembers = teamDetails.objects.get(projectId=projectId)
-    serializer = projectSerializer(project, many=False)
-    serializer2 = teamDetailsSerializer(teamMembers,many=True)
-    return Response(serializer.data + serializer2.data)
+def projectDetails(request, teamId):
+    try:
+        team = teamDetails.objects.filter(projectId=teamId)  # Use .first() to get a single object or None
+        serializer = teamDetailsSerializer(team,many=True)
+        return JsonResponse(serializer.data,safe=False)
+        # if team is not None:
+        # else:
+        #     return JsonResponse({"detail": "Team not found"}, status=404)
+    except Exception as e:
+        print(e)
+        return JsonResponse({"detail": "An error occurred"}, status=500)
