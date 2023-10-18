@@ -10,19 +10,42 @@ from rest_framework.response import Response
 
 @api_view(['GET'])
 def projects(request):
-    projects = Project.objects.all()
-    serializer = projectSerializer(projects, many=True)
-    return Response(serializer.data)
+    try:
+        # Retrieve all projects from the database
+        projects = Project.objects.all()
+        # Serialize the data using projectSerializer
+        serializer = projectSerializer(projects, many=True)
+        # Return the serialized data as a JSON response
+        pages = [serializer.data[i:i + 20] for i in range(0, len(serializer.data), 20)]
+        return JsonResponse(pages, safe=False)
+    except Exception as e:
+        print(e)
+        return JsonResponse(
+            {"detail": "An error occurred: " + str(e)},
+            status=500
+        )
 
 
 def projectDetails(request, teamId):
     try:
-        team = teamDetails.objects.filter(projectId=teamId)  # Use .first() to get a single object or None
-        serializer = teamDetailsSerializer(team,many=True)
-        return JsonResponse(serializer.data,safe=False)
-        # if team is not None:
-        # else:
-        #     return JsonResponse({"detail": "Team not found"}, status=404)
+        project = Project.objects.filter(projectId=teamId).first()
+        team = teamDetails.objects.filter(projectId=teamId)
+        
+        if project is not None and team is not None:
+            # Serialize the data from both models
+            project_data = projectSerializer(project).data
+            team_data = teamDetailsSerializer(team, many=True).data
+            project_data['category'] = project_data['category'].split(',')
+
+            # Create a dictionary to combine the data
+            combined_data = {
+                "project": project_data,
+                "team": team_data,
+            }
+            
+            return JsonResponse(combined_data, safe=False)
+        else:
+            return JsonResponse({"detail": "Team or project not found"}, status=404)
     except Exception as e:
         print(e)
         return JsonResponse({"detail": "An error occurred"}, status=500)
