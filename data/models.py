@@ -11,6 +11,7 @@ class Project(models.Model):
     mentor = models.CharField(max_length=100,blank=False)
     youtubeLink = models.URLField(max_length=200,default='')
     category  = models.CharField(max_length=100,blank=False)
+    img = models.CharField(max_length=20 ,default='N N N N N')
     
     def __str__(self):
         return self.name

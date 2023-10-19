@@ -8,6 +8,8 @@ from rest_framework.response import Response
 
 # Create your views here.
 
+
+imgLink = 'https://ssramritapuri.blob.core.windows.net/data/img/'
 @api_view(['GET'])
 def projects(request):
     try:
@@ -15,6 +17,13 @@ def projects(request):
         projects = Project.objects.all()
         # Serialize the data using projectSerializer
         serializer = projectSerializer(projects, many=True)
+        for i in serializer.data:
+            im = []
+            t = i['img'].split()
+            for a,b in enumerate(t):
+                if b=='Y':
+                    im.append(imgLink+i['projectId']+'-img'+str(a+1)+'.jpg')
+            i['img'] = im
         # Return the serialized data as a JSON response
         pages = [serializer.data[i:i + 20] for i in range(0, len(serializer.data), 20)]
         return JsonResponse(pages, safe=False)
