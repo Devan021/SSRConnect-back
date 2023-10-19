@@ -45,7 +45,12 @@ def projectDetails(request, teamId):
             project_data = projectSerializer(project).data
             team_data = teamDetailsSerializer(team, many=True).data
             project_data['category'] = project_data['category'].split(',')
-
+            im = []
+            t = project_data['img'].split()
+            for a,b in enumerate(t):
+                if b=='Y':
+                    im.append(imgLink+project_data['projectId']+'-img'+str(a+1)+'.jpg')
+            project_data['img'] = im
             # Create a dictionary to combine the data
             combined_data = {
                 "project": project_data,
