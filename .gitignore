@@ -1,0 +1,17 @@
+__pycache__/
+.pytest_cache
+.idea
+bin/
+build/
+env/
+htmlcov/
+lib/
+venv/
+.coverage
+db.sqlite3
+../SSRConnect-backend/.env
+.Python
+*.pyc
+.vscode
+db.sql
+huey.db
