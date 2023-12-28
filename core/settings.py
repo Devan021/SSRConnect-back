@@ -15,6 +15,17 @@ DEBUG = env.bool("DEBUG", default=False)
 
 ALLOWED_HOSTS = ['*']
 
+# CORS_ALLOWED_ORIGINS = [
+#     "https://ssrconnect-frontend.vercel.app",
+#     "https://ssr-connect-backend.vercel.app",
+#     "http://localhost:8000",
+#     "http://localhost",
+#     "http://127.0.0.1:8000"
+# ]
+
+CORS_ORIGIN_ALLOW_ALL = True
+CORS_ALLOW_CREDENTIALS = True
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -27,10 +38,12 @@ INSTALLED_APPS = [
     'user',
 
     # 'chowkidar',
+    'corsheaders',
     'rest_framework',
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
